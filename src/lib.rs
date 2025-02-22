@@ -372,6 +372,9 @@ impl GameTagData {
     }
 }
 
+// Can1
+const SFROM_MAGIC_FOOTER: [u8; 4] = [0x43, 0x61, 0x6E, 0x31];
+
 #[derive(Debug)]
 pub struct SwitchSfromFooter {
     pub game_tags: GameTagData,
@@ -413,7 +416,7 @@ impl SfromType {
         } else {
             // Check last 4 bytes are Can1
             let last_bytes = &input[input.len() - 4..];
-            if last_bytes == [0x43, 0x61, 0x6E, 0x31] {
+            if last_bytes == SFROM_MAGIC_FOOTER {
                 println!("Detected Switch SFROM, parsing footer...");
 
                 // Get Game Info Data size (4 bytes before Can1)
@@ -427,7 +430,7 @@ impl SfromType {
                 let footer = SwitchSfromFooter {
                     game_tags: GameTagData::parse(&info_data),
                     game_info_size: info_size,
-                    magic: [0x43, 0x61, 0x6E, 0x31], // "Can1"
+                    magic: SFROM_MAGIC_FOOTER, // "Can1"
                 };
 
                 Ok((input, Self::NintendoSwitch(footer)))
