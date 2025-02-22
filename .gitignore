@@ -5,3 +5,4 @@
 *.sfc
 *.nso
 *.snesmini
+/Cargo.lock
