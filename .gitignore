@@ -1,0 +1,7 @@
+/target
+# Ignore these for now, they are data from Nintendo
+/test/*.json
+*.sfrom
+*.sfc
+*.nso
+*.snesmini

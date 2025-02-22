@@ -1,0 +1,188 @@
+Now that I've basically completed the Preset ID list, and as a result my .sfrom header database efforts... there's really not much left. I didn't even feel a need to update SFROM Tool for the better part of a year because that too was complete enough. There's minor things I can pick away at here and there, but nothing important and meaningful.
+
+Lets first talk about "What's left?". Mysteries I haven't solved. Work I haven't done, etc.
+
+What's left?
+
+As far a header data goes...
+
+h1_unknown1, aka bytes 0x00-0x03:
+
+    I don't think this is anything special. Just some sort of standard for the first few bytes of a file. I see it a lot in different type of files, but haven't looked into it much as I just don't feel it's important.
+
+
+h1_unknown2, aka bytes 0x1C-0x1F:
+
+    All I know about this value is that in early versions of the .sfrom format, this was used to point to h2_unknown3 instead of 0x20. I feel that they are both valid, and directly related. Likely 0x20's offset is zero based at where 0x1C points too. So as long as one is null, they are effectively interchangeable.
+
+
+h1_unknown3, aka bytes 0x2C-0x2F:
+
+    Probably just unused padding.
+
+
+h2_specialChip, aka byte 0x12:
+
+    ROMHacking.net form user Bosco82 took the time to figure out that the purpose of this byte was not solely for the SuperFX Chip. I suspected it might be for other chips, but as the Preset IDs covered that need for other games, I didn't consider it strongly or test it myself. I thought it might be a in header version of the --boost command, but testing didn't reflect it. So I moved on.
+    While it's now known to be for all the special chips supported on the VC/CC, there is a mystery with the SA-1 options. Why 6? What do they do differently? The SMRPG, Kirby Superstar, Kirbys Dreamland 3, & Marvelous. Thats 4 games. Assuming there are differences between the 6 that the different supported games need, the math doesnt add up. My best guess is that the 6 would cover the E-NTSC/J-NTSC releases of the first 3, and Marvelous uses the J version of one. That... or there are 2 unknown SA1 games that were worked on but unreleased on the VC. But if they had a Preset ID reserved, I'd have found it by now like I found Marvelous' before it was dumped.
+
+
+h2_unknown1 & 2, aka bytes 0x13-0x16 & 0x17-0x1A:
+
+    No clue. They were added in the last revision of the .sfrom format. Could be a reserving of space for some ideas during development. Or unused values, purely used for development and replaced with functionality of an assigned Preset ID for official release, like the special chip byte.
+
+
+h2_unknown3 & 4, aka bytes 0x1B-0x1E & 0x1F-0x22:
+
+    I've  REALLY wondered about these! But I have no solid guesses. h2_unknown4 is always 1 after V1.0.2. But h2_unknown3... It's generally 1, but there are a handful of exceptions where it's 0. Those exceptions mostly consist of RPGs. Leading me to want to guess either something to do with SRAM, or High Res mode support. But I don't know. I've never had a solid enough guess I felt was worth the effort of testing for.
+    For additional info to help solve the mystery, the same value in 3DS VC titles is always +2. If it would be 1 on SNESC/WiiU, its 3 on 3DS. If 0 on SNESC/WiiU, it's 2 on 3DS.
+    If theres any other commonality/info worth noting, it might be that all the games were only released in Japan on the WiiU. SoM and FF3 E-NTSCs are the only non-Japanese games on the list, and they were released first in the SFROM format on the SNESC.
+
+
+In addition to whats listed here, any unlisted region ports can be assumed to use the same 0 value too. But these are all that are verified.
+
+    Shin Megami Tensei J-NTSC
+    Darius Twin J-NTSC
+    Bahamut Lagoon J-NTSC
+    Romancing SaGa J-NTSC
+    Romancing SaGa 2 J-NTSC
+    Final Fantasy IV J-NTSC
+    Final Fantasy V J-NTSC
+    Space Invaders J-NTSC
+    Secret of Mana E-NTSC
+    Seiken Densetsu 2 J-NTSC
+    Densetsu no Ogre Battle J-NTSC
+    Tactics Ogre - Let Us Cling Together J-NTSC
+    Final Fantasy III E-NTSC
+    Final Fantasy VI J-NTSC
+    Romancing SaGa 3 J-NTSC
+    Shin Megami Tensei II J-NTSC
+    Shin Megami Tensei if... J-NTSC
+    Rudra no Hihou J-NTSC
+    Final Fantasy USA - Mystic Quest J-NTSC
+    Majin Tensei J-NTSC
+    Majin Tensei II - Spiral Nemesis J-NTSC
+    Gouketuji Ichizoku J-NTSC
+    Last Bible III J-NTSC
+    Live-a-Live J-NTSC
+
+
+PCMF Pointer:
+
+    There's a byte in the PCMF pointer format that I don't know what it does, or where its generated from. I think its a filter/limiter of some sort. Like pitch or base volume of that specific sample.
+
+
+PCM Data File:
+
+    There's data in the .pcm file that's similar to other data. I don't know how or why its generated. My best guess is it's an alternate decoding of a sample, or somehow a right channel of stereo audio of a sample. But neither feel to make sense to me.
+
+
+PresetIDs 0x10E7-0x10E8:
+
+    These are real IDs used by canoe. Not just empty fallbacks like 0x0000 and anything well outside the 0x1000-1245 range. Whatever the game is, its likely that it's unique Wii ID would have been DG. They seem like the same game in different regions. A website stupidly claimed that ID belongs to Super Bomberman 3, but there is no other evidence of that. From the known missing games list only Populus makes sense.
+
+
+Super Mario Allstars Preset IDs:
+
+    What are they? I have patches for them, just no Preset IDs to go with them. They are most likely something in the empty spots of the 0x1119-0x1158 range... but thats not narrowed down much. I think maybe 0x1124-0x1126, but thats a weak guess with little data feeding it.
+
+
+For that matter...
+
+The Knownm Missing Games List:
+
+    What are their IDs? Most of this list comes from a list ripped from early 3DS VC releases. It's been presumed that they were upcoming releases, before Nintendo gave up on that VC.
+
+
+This is the list:
+
+    Super Mario All-Stars E-NTSC
+    Super Mario All-Stars J-NTSC
+    Super Mario All-Stars E-PAL
+    Dragon Ball Z Super Butoden 2 J-NTSC
+    Dragon Ball Z Super Butoden 2 F-PAL
+    Mini Yonku Let's & Go!! - Power WGP 2 J-NTSC
+    Power Soukoban J-NTSC
+    Picross NP Vol1 J-NTSC
+    Picross NP Vol2 J-NTSC
+    Picross NP Vol3 J-NTSC
+    Picross NP Vol4 J-NTSC
+    Picross NP Vol5 J-NTSC
+    Picross NP Vol6 J-NTSC
+    Picross NP Vol7 J-NTSC
+    Picross NP Vol8 J-NTSC
+    Nekketsu Kouha Kunio Kun J-NTSC
+    Dragon Quest 1+2 J-NTSC
+    Dragon Quest 3 J-NTSC
+    Ganbare Goemon 4 J-NTSC
+    Populous E-NTSC
+    Populous J-NTSC
+    Populous E-PAL
+    Super Bomberman 3 J-NTSC
+    Super Bomberman 3 E-PAL
+    Super Bomberman 3 E-NTSC
+    Torneko no Dai Bouken - Fushigi no Dungeon J-NTSC
+
+
+Kyūyaku Megami Tensei: Megami Tensei I・II:
+
+    This is the only undumped game that was released. It was released on Wii, but as it is undumped, I do not know if there are VC/PCM patches for it.
+    Of note, the PresetID I've pegged for it (0x1115) is a very odd ID. It behaves like a Special Chip ID. It and Star Oceans are the only things that will boot Dungeon Master for example (with bad graphics). It's considered along side of a lot of other special chip games in the code. This ID REALLY puzzled me for a while until I figured out to place this game there.
+
+
+Preset IDs 0x123E & 0x1244:
+
+    Are they Stunt Race FX/Wild Trax?
+
+
+Preset ID 0x10A1:
+
+    Whats the deal with it? It "should" be Kirby's Fun Pak E-PAL. That was released on the Wii. But it isnt. If not that, then it "should" be another Kirby Super Star E-NTSC. But neither will boot with that ID. My current conclusion is that it's like unreleased PAL IDs, like SoM D, F, & E-PAL. Reserved, but lacking programing for. Those SoM IDs for example do not enable highres mode. 0x10A1 may be for Kirbys Fun Pack, but lacks programing to enable SA1 and other stuff.
+
+
+Weak guessed PresetIDs/games:
+
+    Are weak guess games like Tetris Attack, Super Puyo Puyo, Super Ninja Boy E-PAL correct? They can never be verified, but they are most likely reserved.
+
+
+So whats next?
+
+Since the Preset ID list, header database and SFROM Tool itself are basically complete. Not much. At least with that stuff/current projects.
+
+Mac & Linux:
+
+I'm working on Mac and Linux ports. At the time of typing this, the Mac port has been tested a bit and is proving stable. Linux should be similar as they use the same interface library, Avalonia. I decided not to replace WPF with Avalonia for the Windows build because while Avalonia is sufficient, its only maybe 90% of what WPF is.
+
+For now the Mac/Linux builds are only available on the Classic Discord. I'll probably pin a link in the #nintendo-modding channel. If not there and you are interested, PM me.
+
+Other than those ports, theres not much left to do with SFROM Tool. I'd still like to work on it/SNES stuff... but if there isnt anything to do, theres no point.
+
+PCM Audio Decoding/BRR Audio Encoding:
+
+I've worked on creating a better PCM audio reinsertion tool than what is available now. But while I have made improvements over existing tools, it's currently not up to my standards. And it might never be. Simply because in Nintendos own process of extracting PCM audio for a ROM there is a data loss. Even if there wasent, the procedure for reinsertion has data loss too. Maybe I could improve the reinsertion procedure, but since the officially released PCM audio contains such data loss, a tool could never hope to achieve the 100% restoration of a ROMs audio that my personal standards have.
+
+I have a small amount of hope to conceive of some workaround to the issue. But I don't believe anything will come of it.
+
+SFROM Tool's Successor:
+
+Finally, theres a new project I want to work on. It's more of a successor to SFROM Tool. But less limited in scope.
+
+All my work for the SNES Classic should not be limited to only the SNES Classic. It should be useful to WiiU, 3DS and future Switch injection too. Possibly even original Wii to some extent.
+
+The VC "injection" scenes have stagnated in progress. I feel they have a lot of room for improvement. My work on the Preset ID list helps illustrate that, since this work could have been done YEARS ago. But wasent.
+
+My goal for SFROM Tools successor is to be a multi platform VC/CC tool. A tool to allow creation for files for all VC/CC platforms, and even a direct importing/exporting between them.
+
+My focus would be on SNES, but I'll likely try to design it in a way to more easily expand into other VC platforms like NES, N64, etc.
+
+The interface for this successor should be much improved over SFROM Tools too. With SFROM Tool I tried to keep it simple. Easy to use/understand without a tutorial. Umm... while I feel I achieved the goal, I do feel I've overestimated what peoples... skill is... in some cases. I don't think I can make a program much easier, so I'll take a step back on that. I'll still aim to make it easy to use, but just not "Open, Save" followed by "Import, Sync" in other tools. I'm considering setting a new design goal for the program of "What would such a tool look like if Nintendo made it themselves? How would it work?". Alas, I'm not as highly a skilled and paid professional as they would have, so I can only hope to get so far towards that goal. But its nice to have a path and a goal to be on track for!
+
+For this successor tool, it would be helpful to have these systems. But I only have a Wii ATM. Which is the least important. I've considered making some sort of effort to take donations for funding of getting these consoles like I was prepared to do last year for getting some VC dumps. But I still dont feel to right about that. However, if you have such consoles you would like to donate, or funds, you can find out how to do so via the "Donate" button on the left. You can donate, or donate towards what ever you want, but my priorities ATM would probably be Switch > WiiU > 3DS. I'm not completely well versed in the extra hardware/exploit method costs on each to "unlock" the systems, so those costs need to be considered too.
+
+Currently I've just done some preliminary work on the WiiU format. Work mainly consisting of reading/building the .rpx format. I started with that as it seems to be the closest to my SNESC work. I feel the Switch would be more important, as it's going to be more popular when SNES games hits its eshop. And I'm already hoping to get some more data from releases from it.
+
+Closing:
+
+In mentioning all the mysteries here, I'm hoping to promote discussion and maybe the community of minds can help get some of it solved. I'll be removing the moderation queue for now
+
+If you have the knowledge, or know someone that might to help with the more technical stuff, that would be most welcome. I'm amazed at how far I've been able to go with such little skill with ROM hacking and understanding of ASM and SNES technical details in general. It's going to be harder to go much further on my own.

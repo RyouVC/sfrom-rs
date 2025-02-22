@@ -1,0 +1,12 @@
+[package]
+name = "sfrom"
+version = "0.1.0"
+edition = "2021"
+description = "SNES/SFC ROM parser for Nintendo Virtual Console games"
+license = "MIT"
+authors = ["Cappy Ishihara <cappy@cappuchino.xyz>"]
+repository = "https://github.com/korewaChino/nso-registry"
+
+[dependencies]
+nom = "8.0.0"
+thiserror = "2.0.11"
