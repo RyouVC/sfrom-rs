@@ -165,6 +165,24 @@ impl SfromFooter {
             },
         ))
     }
+
+    pub fn as_bytes(&self) -> Vec<u8> {
+        let mut data = Vec::new();
+        data.write_all(&self.fps.to_le_bytes()).unwrap();
+        data.write_all(&self.rom_size.to_le_bytes()).unwrap();
+        data.write_all(&self.pcm_samples_size.to_le_bytes())
+            .unwrap();
+        data.write_all(&self.pcm_footer_size.to_le_bytes()).unwrap();
+        data.write_all(&self.preset_id.to_le_bytes()).unwrap();
+        data.write_all(&self.player_count.to_le_bytes()).unwrap();
+        data.write_all(&self.sound_volume.to_le_bytes()).unwrap();
+        data.write_all(&self.rom_type.to_le_bytes()).unwrap();
+        data.write_all(&self.enhancement_chip.to_le_bytes())
+            .unwrap();
+        data.write_all(&self.unknown1.to_le_bytes()).unwrap();
+        data.write_all(&self.unknown2.to_le_bytes()).unwrap();
+        data
+    }
 }
 
 impl GameTagData {
@@ -317,7 +335,9 @@ fn le_u24(input: &[u8]) -> IResult<&[u8], u32> {
 }
 #[derive(Debug)]
 pub enum SfromType {
+    /// As seen in the SNES Mini/Classic
     Classic(SfromHeader),
+    /// SFC ROMs with a `Can1` footer for the NSO app
     NintendoSwitch(SwitchSfromFooter),
 }
 
@@ -430,16 +450,19 @@ impl Sfc {
 
     pub fn convert_to_switch(&self) -> Vec<u8> {
         let mut modified_rom_data = self.rom_data.clone();
-        let mut footer = [
+        const FOOTER: [u8; 20] = [
             0x47, 0x02, 0x00, 0x00, 0x11, 0x10, 0x76, 0x91, 0x74, 0x06, 0x70, 0x02, 0x0C, 0x00,
             0x00, 0x00, 0x43, 0x61, 0x6E, 0x31,
         ];
-        modified_rom_data.extend_from_slice(&footer);
+        modified_rom_data.extend_from_slice(&FOOTER);
         modified_rom_data
     }
 
     pub fn convert_to_snes_mini(&self) -> Vec<u8> {
         let modified_rom_data = self.rom_data.clone();
+
+        // prepend header stuff here
+        // ...
         modified_rom_data
     }
 }
