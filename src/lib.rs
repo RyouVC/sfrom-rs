@@ -48,33 +48,87 @@ pub struct GameTagData {
     pub flags: Option<[u8; 7]>,           // Tag 'P'
     pub unknown_s: Option<[u8; 3]>,       // Tag 'S'
     pub superfx_clock: Option<u16>,       // Tag 'U'
+    /// Anti-epilepsy filter version
     pub armet_version: Option<u8>,        // Tag 'a'
+    /// Location of the SNES header
     pub snes_header_location: Option<u8>, // Tag 'c'
     pub unknown_d: Option<u8>,            // Tag 'd'
-    pub enhancement_chip: Option<u8>,     // Tag 'e'
-    pub resolution_ratio: Option<u8>,     // Tag 'h'
+    /// Additional on-cart co-processors to emulate
+    /// (e.g. SA1, SuperFX, DSP1).
+    /// 
+    /// Some games like SMRPG, Star Fox, DOOM '93,
+    /// Dungeon Master or Mega Man X2/X3 require this
+    /// for accuracy
+    pub enhancement_chip: Option<EnhancementChip>,     // Tag 'e'
+    /// Aspect ratio of the game, 
+    /// 0 = 256x224 (1:1),
+    /// 1 = 512x224 (2:1),
+    /// 2 = 256x448 (1:2),
+    /// 3 = 512x448 (2:2)
+    // todo: enum
+    pub aspect_ratio: Option<u8>,     // Tag 'h'
     pub unknown_j: Option<u8>,            // Tag 'j'
+    /// Whether the game supports the mouse
+    /// (Mario Paint, etc.)
     pub mouse_flag: Option<u8>,           // Tag 'm'
+    /// Maximum number of players supported by the game
+    /// Usually 1-2 for most games,
+    /// some games support up to 4 or even 8 players
     pub max_players: Option<u8>,          // Tag 'p'
     pub visible_height: Option<u8>,       // Tag 'r'
     pub unknown_t: Option<u8>,            // Tag 't'
+    /// Audio volume level, for normalization between
+    /// games
     pub volume: Option<u8>,               // Tag 'v'
 }
 
+#[derive(Debug)]
 #[repr(u8)]
 pub enum EnhancementChip {
-    Normal = 0x00,
+    /// No enhancement chip
+    None = 0x00,
+    /// DSP1
+    /// Used in games like Super Mario Kart, 
     Dsp1 = 0x02,
+    /// S-DD1 chip for decompression.
+    /// used in games like Star Ocean, Street Fighter Alpha 2
     Sdd1 = 0x03,
+    /// Capcom Cx4 chip, used
+    /// in games like Mega Man X2/X3
     Cx4 = 0x04,
     MegaManX = 0x05, // Copy protection fix?
+    /// SA-1 chip, used in games like Super Mario RPG
+    /// or Kirby's Dream Land 3 and others
     Sa1_1 = 0x06,
     Sa1_2 = 0x07,
     Sa1_3 = 0x08,
     Sa1_4 = 0x09,
     Sa1_5 = 0x0A,
     Sa1_6 = 0x0B,
+    /// SuperFX chip, used in games like Star Fox,
+    /// Yoshi's Island and DOOM 
     SuperFx = 0x0C,
+    Other(u8),
+}
+
+impl From<u8> for EnhancementChip {
+    fn from(value: u8) -> Self {
+        match value {
+            0x00 => Self::None,
+            0x02 => Self::Dsp1,
+            0x03 => Self::Sdd1,
+            0x04 => Self::Cx4,
+            0x05 => Self::MegaManX,
+            0x06 => Self::Sa1_1,
+            0x07 => Self::Sa1_2,
+            0x08 => Self::Sa1_3,
+            0x09 => Self::Sa1_4,
+            0x0A => Self::Sa1_5,
+            0x0B => Self::Sa1_6,
+            0x0C => Self::SuperFx,
+            other => Self::Other(other),
+        }
+    }
 }
 
 impl SfromHeader {
@@ -198,7 +252,7 @@ impl GameTagData {
             snes_header_location: None,
             unknown_d: None,
             enhancement_chip: None,
-            resolution_ratio: None,
+            aspect_ratio: None,
             unknown_j: None,
             mouse_flag: None,
             max_players: None,
@@ -279,11 +333,11 @@ impl GameTagData {
                     i += 1;
                 } // 'd'
                 0x65 => {
-                    data.enhancement_chip = Some(input[i + 1]);
+                    data.enhancement_chip = Some(input[i + 1].into());
                     i += 1;
                 } // 'e'
                 0x68 => {
-                    data.resolution_ratio = Some(input[i + 1]);
+                    data.aspect_ratio = Some(input[i + 1]);
                     i += 1;
                 } // 'h'
                 0x6A => {
